@@ -1,11 +1,12 @@
 #include <iostream>
 
+void mainBanner(); 
 bool mainMenu(double& balance);
 void cashDeposit(double& balance); 
 void withdrawCash(double& balance); 
 void displayBalance(double& balance); 
 void endSession(); 
-void clearWait();
+void clearWait(char second); 
 
 int main() {
 	
@@ -19,36 +20,47 @@ int main() {
 	}
 }
 
-void clearWait() {
+void clearWait(char second = '1') {
 
-	system("sleep 2");
+	char command[] = "sleep 1";
+	command[6] = second;
+	system(command);
 	system("clear");
 }
 
 void displayBalance(double& balance) {
+	mainBanner();
+	std::cout << "   Consulta de saldo.\n";
+	std::cout << '\n';
+	std::cout << "   Su saldo actual es\n";
+	std::cout << '\n';
+	std::cout << "   " << balance << "€\n";
+	std::cout << '\n';
 
-	std::cout << "Consulta de saldo.\n";
-	std::cout << '\n';
-	std::cout << "Su saldo actual es\n";
-	std::cout << '\n';
-	std::cout << balance << "€\n";
-	std::cout << '\n';
+	clearWait('3');
+}
 
-	clearWait();
+void mainBanner() {
+	std::cout << '\n';
+	std::cout << " Banco SCT\n";
+	std::cout << " -------------------------------------------\n";
+	std::cout << '\n';
 }
 
 bool mainMenu(double& balance) {
-
-	std::cout << "Bienvenido a tu banco\n";
-	system("sleep 2");
+	
+	mainBanner();
+	std::cout << "   Bienvenido a tu banco\n";
+	system("sleep 1");
 	std::cout << '\n';
-	std::cout << "Selecciona la operación que desees realizar.\n";
+	std::cout << "   Selecciona la operación que desees realizar.\n";
 	std::cout << '\n';
-	std::cout << "1. Ingresar efectivo.\n";
-	std::cout << "2. Retirar efectivo.\n";
-	std::cout << "3. Consultar saldo.\n";
-	std::cout << "4. Terminar sesión.\n";
-	std::cout << "Selección: ";
+	std::cout << "      1. Ingresar efectivo.\n";
+	std::cout << "      2. Retirar efectivo.\n";
+	std::cout << "      3. Consultar saldo.\n";
+	std::cout << "      4. Terminar sesión.\n";
+	std::cout << '\n';
+	std::cout << "   Selección: ";
 	
 	int selection {};
 	std::cin >> selection;
@@ -77,7 +89,7 @@ bool mainMenu(double& balance) {
 		break;
 	default:
 		//Error
-		std::cout << "Selección errónea. Intentelo de nuevo.\n";
+		std::cout << "   Selección errónea. Intentelo de nuevo.\n";
 		std::cout << '\n';
 		break;
 	}
@@ -86,44 +98,52 @@ bool mainMenu(double& balance) {
 }
 
 void endSession() {
-	std::cout << "Finalizando la sesion.\n";
+
+	mainBanner();
+	std::cout << "   Finalizando la sesion.\n";
 	std::cout << '\n';
-	std::cout << "Gracias por usar nuestros servicios.\n";
+	std::cout << "   Gracias por usar nuestros servicios.\n";
 	std::cout << '\n';
 
-	clearWait();
+	clearWait('2');
 }
 
 void cashDeposit(double& balance) {
-	std::cout << "Ingreso de efectivo\n";
+	mainBanner();
+	std::cout << "   Ingreso de efectivo\n";
 	std::cout << '\n';
-	std::cout << "Indique la cantidad a ingresar\n";
-	std::cout << ">> ";
+	std::cout << "   Indique la cantidad a ingresar\n";
+	std::cout << '\n';
+	std::cout << "   >> ";
 
 	double amount {};
 	std::cin >> amount;
 
 	balance += amount;
 
-	std::cout << "Efectivo realizado con exito.\n";
+	std::cout << '\n';
+	std::cout << "   Efectivo realizado con exito.\n";
 	std::cout << '\n';
 
-	clearWait();
+	clearWait('2');
 }
 
 void withdrawCash(double& balance) {
-	std::cout << "Retirada de efectivo\n";
+	mainBanner();
+	std::cout << "   Retirada de efectivo\n";
 	std::cout << '\n';
-	std::cout << "Indique la cantidad a extraer\n";
-	std::cout << ">> ";
+	std::cout << "   Indique la cantidad a extraer\n";
+	std::cout << '\n';
+	std::cout << "   >> ";
 
 	double amount {};
 	std::cin >> amount;
 
 	balance -= amount;
 
-	std::cout << "Efectivo retirado con exito.\n";
+	std::cout << '\n';
+	std::cout << "   Efectivo retirado con exito.\n";
 	std::cout << '\n';
 
-	clearWait();
+	clearWait('2');
 } 
