@@ -1,2 +1,3 @@
-Alejandro
-
+User: Alejandro, Pass: 1234, Balance: 0;
+User: Lucia, Pass: 1234, Balance: 0;
+User: Lucia, Pass: 2345, Balance: 0;

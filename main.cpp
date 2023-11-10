@@ -2,27 +2,30 @@
 #include <fstream>
 
 void mainBanner(); 
-bool mainMenu(double& balance);
+bool mainMenu(double& balance, std::string_view user);
 void cashDeposit(double& balance); 
 void withdrawCash(double& balance); 
 void displayBalance(double& balance); 
 void endSession(); 
 void clearWait(char second); 
-bool login();
+bool login(std::string& userLogged);
 bool checkUser(std::string_view user); 
+bool checkPass(std::string_view pass);
+void getBalance(double& balance);
 
 int main() {
 	
 	system("clear");
 
 	double accountBalance {0.0};
+	std::string userLogged {};
 	bool loopFlag {true};
 
 	while(loopFlag) {
-		if(!login()) {
+		if(!login(userLogged)) {
 			break;
 		}	
-		loopFlag = mainMenu(accountBalance);	
+		loopFlag = mainMenu(accountBalance, userLogged);	
 	}
 }
 
@@ -53,10 +56,10 @@ void mainBanner() {
 	std::cout << '\n';
 }
 
-bool mainMenu(double& balance) {
+bool mainMenu(double& balance, std::string_view user) {
 	
 	mainBanner();
-	std::cout << "   Bienvenido a tu banco\n";
+	std::cout << "   Bienvenido a tu banco, " << user << "\n";
 	system("sleep 1");
 	std::cout << '\n';
 	std::cout << "   Selecciona la operación que desees realizar.\n";
@@ -163,10 +166,16 @@ bool checkUser(std::string_view user) {
 	}
 
 	bool userExist {false};
+	std::string userRead {};
+	std::string line {};
 
 	while(fileIn) {
-		std::string userRead{};
-		std::getline(fileIn, userRead);
+		std::getline(fileIn, line);
+
+		if(line.find("User:") != std::string::npos) {
+			userRead = line.substr(0, line.find(", Pass"));
+			userRead = userRead.substr(line.find(":") + 2);
+		}
 
 		if(userRead == user) {
 			//User exists
@@ -177,7 +186,58 @@ bool checkUser(std::string_view user) {
 	return userExist;
 }
 
-bool login() {
+bool checkPass(std::string_view pass) {
+	std::ifstream fileIn {"users.txt", std::ios::in};
+
+	if(!fileIn) {
+		std::cout << "   Error con el archivo de lectura.\n";
+		system("touch users.txt");
+	}
+
+	bool passCorrect {false};
+	std::string passRead {};
+	std::string line {};
+
+	while(fileIn) {
+		std::getline(fileIn, line);
+
+		if(line.find("Pass:") != std::string::npos) {
+			passRead = line.substr(line.find("Pass:"));
+			passRead = passRead.substr(passRead.find(":") + 2);
+			passRead = passRead.substr(0, passRead.find(", B"));
+		}
+
+		if(passRead == pass) {
+			//Password is correct
+			passCorrect = true;
+		}
+	}
+
+	return passCorrect;
+}
+
+void getBalance(double& balance) {
+	std::ifstream fileIn {"users.txt", std::ios::in};
+
+	if(!fileIn) {
+		std::cout << "   Error con el archivo de lectura.\n";
+		system("touch users.txt");
+	}
+
+	std::string readBalance {};
+	std::string line {};
+
+	while(fileIn) {
+		std::getline(fileIn, line);
+
+		if(line.find("Balance:") != std::string::npos) {
+			readBalance = line.substr(line.find("Balance:"));
+			readBalance = readBalance.substr(readBalance.find(":") + 2);
+		}
+	}
+}
+
+bool login(std::string& userLogged) {
 	mainBanner();
 	std::cout << "   Introduce tus datos de inicio de sesion.\n";
 	std::cout << '\n';
@@ -188,23 +248,26 @@ bool login() {
 
 	std::cout << "   Clave: ";
 
-	int pass {};
+	std::string pass {};
 	std::cin >> pass;
 
 	std::cout << '\n';
 	std::cout << "   Comprobando...\n";
 	std::cout << '\n';
 
-	bool loginSucces {false};
+	bool userChecking {};
+	userChecking = checkUser(user);
+	bool passChecking {};
+	passChecking = checkPass(pass);
+	bool loginSuccess {userChecking && passChecking};
 
-	if(checkUser(user)) {
-		std::cout << "   Usuario correcto.\n";
-		loginSucces = checkUser(user);
+	if(!loginSuccess) {
+		std::cout << "   Error al abrir la sesion.\n";
 	}
 	else {
-		std::cout << "   El usuario introducido es incorrecto o no existe.\n";
+		userLogged = user;
 	}
 
 	clearWait('2');
-	return loginSucces;
+	return loginSuccess;
 } 
