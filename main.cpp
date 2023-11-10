@@ -9,7 +9,8 @@ void displayBalance(double& balance);
 void endSession(); 
 void clearWait(char second); 
 bool login();
- 
+bool checkUser(std::string_view user); 
+
 int main() {
 	
 	system("clear");
@@ -153,6 +154,29 @@ void withdrawCash(double& balance) {
 	clearWait('2');
 } 
 
+bool checkUser(std::string_view user) {
+	std::ifstream fileIn {"users.txt", std::ios::in};
+
+	if(!fileIn) {
+		std::cout << "   Error con el archivo de lectura.\n";
+		system("touch users.txt");
+	}
+
+	bool userExist {false};
+
+	while(fileIn) {
+		std::string userRead{};
+		std::getline(fileIn, userRead);
+
+		if(userRead == user) {
+			//User exists
+			userExist = true;
+		}
+	}
+
+	return userExist;
+}
+
 bool login() {
 	mainBanner();
 	std::cout << "   Introduce tus datos de inicio de sesion.\n";
@@ -171,31 +195,16 @@ bool login() {
 	std::cout << "   Comprobando...\n";
 	std::cout << '\n';
 
-	std::ifstream fileIn {"users.txt", std::ios::in};
-	if(!fileIn) {
-		std::cout << "   Error con el archivo de lectura.\n";
-		system("touch users.txt");
-	}
+	bool loginSucces {false};
 
-	bool userExist {false};
-
-	while(fileIn) {
-		std::string userRead{};
-		std::getline(fileIn, userRead);
-
-		if(userRead == user) {
-			//User exists
-			userExist = true;
-		}
-	}
-
-	if(userExist) {
+	if(checkUser(user)) {
 		std::cout << "   Usuario correcto.\n";
+		loginSucces = checkUser(user);
 	}
 	else {
 		std::cout << "   El usuario introducido es incorrecto o no existe.\n";
 	}
 
 	clearWait('2');
-	return userExist;
+	return loginSucces;
 } 
