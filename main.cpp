@@ -8,9 +8,11 @@ void withdrawCash(double& balance);
 void displayBalance(double& balance); 
 void endSession(); 
 void clearWait(char second); 
+
 bool login(std::string& userLogged);
-bool checkUser(std::string_view user); 
-bool checkPass(std::string_view pass);
+bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck); 
+bool checkUser(std::string_view lineToCheck, std::string_view userToCheck); 
+bool checkPass(std::string_view lineToCheck, std::string_view passToCheck); 
 void getBalance(double& balance);
 
 int main() {
@@ -157,63 +159,25 @@ void withdrawCash(double& balance) {
 	clearWait('2');
 } 
 
-bool checkUser(std::string_view user) {
-	std::ifstream fileIn {"users.txt", std::ios::in};
+bool checkUser(std::string_view lineToCheck, std::string_view userToCheck) {
 
-	if(!fileIn) {
-		std::cout << "   Error con el archivo de lectura.\n";
-		system("touch users.txt");
-	}
-
-	bool userExist {false};
 	std::string userRead {};
-	std::string line {};
 
-	while(fileIn) {
-		std::getline(fileIn, line);
+	userRead = lineToCheck.substr(0, lineToCheck.find(", Pass"));
+	userRead = userRead.substr(userRead.find(":") + 2);
 
-		if(line.find("User:") != std::string::npos) {
-			userRead = line.substr(0, line.find(", Pass"));
-			userRead = userRead.substr(line.find(":") + 2);
-		}
-
-		if(userRead == user) {
-			//User exists
-			userExist = true;
-		}
-	}
-
-	return userExist;
+	return (userRead == userToCheck);
 }
 
-bool checkPass(std::string_view pass) {
-	std::ifstream fileIn {"users.txt", std::ios::in};
+bool checkPass(std::string_view lineToCheck, std::string_view passToCheck) {
 
-	if(!fileIn) {
-		std::cout << "   Error con el archivo de lectura.\n";
-		system("touch users.txt");
-	}
-
-	bool passCorrect {false};
 	std::string passRead {};
-	std::string line {};
 
-	while(fileIn) {
-		std::getline(fileIn, line);
+	passRead = lineToCheck.substr(lineToCheck.find("Pass:"));
+	passRead = passRead.substr(passRead.find(":") + 2);
+	passRead = passRead.substr(0, passRead.find(", B"));
 
-		if(line.find("Pass:") != std::string::npos) {
-			passRead = line.substr(line.find("Pass:"));
-			passRead = passRead.substr(passRead.find(":") + 2);
-			passRead = passRead.substr(0, passRead.find(", B"));
-		}
-
-		if(passRead == pass) {
-			//Password is correct
-			passCorrect = true;
-		}
-	}
-
-	return passCorrect;
+	return (passRead == passToCheck);
 }
 
 void getBalance(double& balance) {
@@ -237,6 +201,31 @@ void getBalance(double& balance) {
 	}
 }
 
+bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck) {
+	std::ifstream fileIn {"users.txt", std::ios::in};
+	
+	if(!fileIn) {
+		std::cout << "   Error con el archivo de lectura.\n";
+		system("touch users.txt");
+		return 1;
+	}
+
+	std::string line {};
+	bool credentials {false};
+
+	while(fileIn) {
+		std::getline(fileIn, line);
+
+		if(!line.empty()) {
+			if(checkUser(line, userToCheck) && checkPass(line, passToCheck)) {
+				credentials = true;
+			}
+		}
+	}
+
+	return credentials;
+}
+
 bool login(std::string& userLogged) {
 	mainBanner();
 	std::cout << "   Introduce tus datos de inicio de sesion.\n";
@@ -255,19 +244,15 @@ bool login(std::string& userLogged) {
 	std::cout << "   Comprobando...\n";
 	std::cout << '\n';
 
-	bool userChecking {};
-	userChecking = checkUser(user);
-	bool passChecking {};
-	passChecking = checkPass(pass);
-	bool loginSuccess {userChecking && passChecking};
-
-	if(!loginSuccess) {
-		std::cout << "   Error al abrir la sesion.\n";
+	if(checkCredentials(user, pass)) {
+		userLogged = user;
+		clearWait('2');
+		return true;
 	}
 	else {
-		userLogged = user;
+		std::cout << "   Error al abrir la sesion.\n";
+		clearWait('2');
+		return false;
 	}
 
-	clearWait('2');
-	return loginSuccess;
 } 
