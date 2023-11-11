@@ -9,11 +9,11 @@ void displayBalance(double& balance);
 void endSession(); 
 void clearWait(char second); 
 
-bool login(std::string& userLogged);
-bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck); 
+bool login(std::string& userLogged, double& balance);
+bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck, double& balance); 
 bool checkUser(std::string_view lineToCheck, std::string_view userToCheck); 
 bool checkPass(std::string_view lineToCheck, std::string_view passToCheck); 
-void getBalance(double& balance);
+void getBalance(std::string_view lineToCheck, double& balance);
 
 int main() {
 	
@@ -23,11 +23,13 @@ int main() {
 	std::string userLogged {};
 	bool loopFlag {true};
 
-	while(loopFlag) {
-		if(!login(userLogged)) {
-			break;
-		}	
-		loopFlag = mainMenu(accountBalance, userLogged);	
+	if(!login(userLogged, accountBalance)) {
+		return 1;
+	}
+	else {
+		while(loopFlag) {
+			loopFlag = mainMenu(accountBalance, userLogged);	
+		}
 	}
 }
 
@@ -180,28 +182,17 @@ bool checkPass(std::string_view lineToCheck, std::string_view passToCheck) {
 	return (passRead == passToCheck);
 }
 
-void getBalance(double& balance) {
-	std::ifstream fileIn {"users.txt", std::ios::in};
+void getBalance(std::string_view lineToCheck, double& balance) {
 
-	if(!fileIn) {
-		std::cout << "   Error con el archivo de lectura.\n";
-		system("touch users.txt");
-	}
+	std::string balanceRead {};
 
-	std::string readBalance {};
-	std::string line {};
+	balanceRead = lineToCheck.substr(lineToCheck.find("Balance:"));
+	balanceRead = balanceRead.substr(balanceRead.find(":") + 2);
 
-	while(fileIn) {
-		std::getline(fileIn, line);
-
-		if(line.find("Balance:") != std::string::npos) {
-			readBalance = line.substr(line.find("Balance:"));
-			readBalance = readBalance.substr(readBalance.find(":") + 2);
-		}
-	}
+	balance = std::stod(balanceRead);
 }
 
-bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck) {
+bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck, double& balance) {
 	std::ifstream fileIn {"users.txt", std::ios::in};
 	
 	if(!fileIn) {
@@ -218,6 +209,7 @@ bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck
 
 		if(!line.empty()) {
 			if(checkUser(line, userToCheck) && checkPass(line, passToCheck)) {
+				getBalance(line, balance);
 				credentials = true;
 			}
 		}
@@ -226,7 +218,7 @@ bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck
 	return credentials;
 }
 
-bool login(std::string& userLogged) {
+bool login(std::string& userLogged, double& balance) {
 	mainBanner();
 	std::cout << "   Introduce tus datos de inicio de sesion.\n";
 	std::cout << '\n';
@@ -244,7 +236,7 @@ bool login(std::string& userLogged) {
 	std::cout << "   Comprobando...\n";
 	std::cout << '\n';
 
-	if(checkCredentials(user, pass)) {
+	if(checkCredentials(user, pass, balance)) {
 		userLogged = user;
 		clearWait('2');
 		return true;
