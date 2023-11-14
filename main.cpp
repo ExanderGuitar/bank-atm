@@ -9,7 +9,7 @@ void displayBalance(double& balance);
 void endSession(); 
 void clearWait(char second); 
 
-bool login(std::string& userLogged, double& balance);
+bool login(std::string& userLogged, std::string& passLogged, double& balance);
 bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck, double& balance); 
 bool checkUser(std::string_view lineToCheck, std::string_view userToCheck); 
 bool checkPass(std::string_view lineToCheck, std::string_view passToCheck); 
@@ -21,9 +21,10 @@ int main() {
 
 	double accountBalance {0.0};
 	std::string userLogged {};
+	std::string passLogged {};
 	bool loopFlag {true};
 
-	if(!login(userLogged, accountBalance)) {
+	if(!login(userLogged, passLogged, accountBalance)) {
 		return 1;
 	}
 	else {
@@ -218,7 +219,7 @@ bool checkCredentials(std::string_view userToCheck, std::string_view passToCheck
 	return credentials;
 }
 
-bool login(std::string& userLogged, double& balance) {
+bool login(std::string& userLogged, std::string& passLogged, double& balance) {
 	mainBanner();
 	std::cout << "   Introduce tus datos de inicio de sesion.\n";
 	std::cout << '\n';
@@ -238,6 +239,7 @@ bool login(std::string& userLogged, double& balance) {
 
 	if(checkCredentials(user, pass, balance)) {
 		userLogged = user;
+		passLogged = pass;
 		clearWait('2');
 		return true;
 	}
