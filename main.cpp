@@ -15,21 +15,26 @@ bool checkUser(std::string_view lineToCheck, std::string_view userToCheck);
 bool checkPass(std::string_view lineToCheck, std::string_view passToCheck); 
 void getBalance(std::string_view lineToCheck, double& balance);
 
+struct Client {
+	std::string name {"Unknown"};
+	std::string code {"0000"};
+	double balance {0.0};
+};
+
 int main() {
 	
 	system("clear");
 
-	double accountBalance {0.0};
-	std::string userLogged {};
-	std::string passLogged {};
+	Client client{};	
+
 	bool loopFlag {true};
 
-	if(!login(userLogged, passLogged, accountBalance)) {
+	if(!login(client.name, client.code, client.balance)) {
 		return 1;
 	}
 	else {
 		while(loopFlag) {
-			loopFlag = mainMenu(accountBalance, userLogged);	
+			loopFlag = mainMenu(client.balance, client.name);	
 		}
 	}
 }
