@@ -15,6 +15,9 @@ That's all. This is just a practice project of an ATM.
 
 ## Screenshoots
 ![Login interface](https://github.com/ExanderGuitar/bank-atm/blob/ebe5cf8062c6c7d62868a169c44b74a560dc2f14/Screenshoots/Image%201.png)
+![Login interface](https://github.com/ExanderGuitar/bank-atm/blob/ebe5cf8062c6c7d62868a169c44b74a560dc2f14/Screenshoots/Image%202.png)
+![Login interface](https://github.com/ExanderGuitar/bank-atm/blob/ebe5cf8062c6c7d62868a169c44b74a560dc2f14/Screenshoots/Image%203.png)
+
 ## Notes
 There is no verification of input format, that is way even the password accept a string.
 Sensible information is stored as plain text and it should be encrypted and secured.
