@@ -14,7 +14,7 @@ Everything is written on text format. The users.txt contains the login informati
 That's all. This is just a practice project of an ATM.
 
 ## Screenshoots
-https://github.com/ExanderGuitar/bank-atm/Screenshoots/Image 1.png
+![Login interface](https://github.com/ExanderGuitar/bank-atm/Screenshoots/Image 1.png)
 ## Notes
 There is no verification of input format, that is way even the password accept a string.
 Sensible information is stored as plain text and it should be encrypted and secured.
