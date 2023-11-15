@@ -18,6 +18,9 @@ int main() {
 		while(loopFlag) {
 			loopFlag = mainMenu(client.balance, client.name);	
 		}
+		std::vector<Client> clients {getClients()};
+		updateClient (clients, client);
+		saveClients (clients);
 	}
 }
 

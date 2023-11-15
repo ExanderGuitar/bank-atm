@@ -1,3 +1,4 @@
-User: Alejandro, Pass: 1234, Balance: 1100;
-User: Lucia, Pass: 1234, Balance: 550;
-User: Lucia, Pass: 2345, Balance: 200;
+User: Alejandro, Pass: 1234, Balance: 1650.010000
+User: Lucia, Pass: 5555, Balance: 500.000000
+User: Paco, Pass: 1111, Balance: 40.000000
+User: Maria, Pass: 1221, Balance: 754.000000
